@@ -1,4 +1,3 @@
-// import javax.swing.*;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -8,127 +7,110 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
-import java.awt.*;
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.Font;
 
+/**
+ * Sample 2 – Swing window with menu bar, Exit action, and About dialog.
+ */
 public class Main implements ActionListener {
-    public static String appName = "My GUI Application 2";
-    public static Font defaultFont = new Font(Font.SANS_SERIF, Font.PLAIN, 13);
 
-    public static void main(String[] args){
-        // System.out.println("Hello World!");
-        JFrame frame = new JFrame(Main.appName);
-        
-        // app configuration
+    public static final String APP_NAME = "My GUI Application 2";
+    public static final Font DEFAULT_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 13);
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame(APP_NAME);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(720,480);
+        frame.setSize(720, 480);
 
-        
-        Main instanceOfMainClass = new Main();
+        Main app = new Main();
 
         // Menu Bar
         JMenuBar menuBar = new JMenuBar();
 
-        // Create menu
-        JMenu mFile = new JMenu("File");
-        mFile.setFont(defaultFont);
-        JMenu mHelp = new JMenu("Help");
-        mHelp.setFont(defaultFont);
+        JMenu fileMenu = new JMenu("File");
+        fileMenu.setFont(DEFAULT_FONT);
 
-        // Create menu item
+        JMenuItem openItem = new JMenuItem("Open File...");
+        openItem.setFont(DEFAULT_FONT);
+        fileMenu.add(openItem);
 
-        JMenuItem miOpenFile = new JMenuItem("Open File...    ");
-        miOpenFile.setFont(defaultFont);
-        mFile.add(miOpenFile);
+        fileMenu.add(new JSeparator());
 
-        mFile.add(new JSeparator());
+        JMenuItem saveItem = new JMenuItem("Save");
+        saveItem.setFont(DEFAULT_FONT);
+        fileMenu.add(saveItem);
 
-        JMenuItem miSave = new JMenuItem("Save");
-        miSave.setFont(defaultFont);
-        mFile.add(miSave);
+        JMenuItem saveAsItem = new JMenuItem("Save As...");
+        saveAsItem.setFont(DEFAULT_FONT);
+        fileMenu.add(saveAsItem);
 
-        JMenuItem miSaveAs = new JMenuItem("Save As...");
-        miSaveAs.setFont(defaultFont);
-        mFile.add(miSaveAs);
+        fileMenu.add(new JSeparator());
 
-        mFile.add(new JSeparator());
+        JMenuItem exitItem = new JMenuItem("Exit");
+        exitItem.setFont(DEFAULT_FONT);
+        exitItem.addActionListener(app);
+        fileMenu.add(exitItem);
 
-        JMenuItem miExit = new JMenuItem("Exit");
-        miExit.setFont(defaultFont);
-        // miExit.addActionListener(new ActionListener(){
-        //     public void actionPerformed(ActionEvent e){
-        //         // System.out.println("The end is near!");
-        //         System.exit(0);
-        //     }
-        // });
-        miExit.addActionListener(instanceOfMainClass);
-        mFile.add(miExit);
+        JMenu helpMenu = new JMenu("Help");
+        helpMenu.setFont(DEFAULT_FONT);
 
-        // Help Menu
-        // ... code ...
-        // mHelp.add(new JSeparator());
+        JMenuItem aboutItem = new JMenuItem("About");
+        aboutItem.setFont(DEFAULT_FONT);
+        aboutItem.addActionListener(app);
+        helpMenu.add(aboutItem);
 
-        JMenuItem miAbout = new JMenuItem("About");
-        miAbout.setFont(defaultFont);
-        miAbout.addActionListener(instanceOfMainClass);
-        mHelp.add(miAbout);
-        
-        // Load MenuBar menu
-        menuBar.add(mFile);
-        menuBar.add(mHelp);
+        menuBar.add(fileMenu);
+        menuBar.add(helpMenu);
 
-        // Center Panel
-        JPanel container = new JPanel();
-        JLabel containerLabel = new JLabel("Hello");
-        container.add(containerLabel);
+        // Center panel
+        JPanel center = new JPanel();
+        center.add(new JLabel("Hello"));
 
-        // Bottom Panel
+        // Footer
         JPanel footer = new JPanel();
         JLabel footerLabel = new JLabel("Made with love in 2023");
-        footerLabel.setFont(defaultFont);
+        footerLabel.setFont(DEFAULT_FONT);
         footer.add(footerLabel);
 
-        // JButton button = new JButton("Press");
-
-        // Font
-        
         frame.getContentPane().add(BorderLayout.NORTH, menuBar);
-        frame.getContentPane().add(BorderLayout.CENTER, container);
+        frame.getContentPane().add(BorderLayout.CENTER, center);
         frame.getContentPane().add(BorderLayout.SOUTH, footer);
-        
+
         frame.setLocationRelativeTo(null);
-        frame.setVisible(true);        
+        frame.setVisible(true);
     }
 
-    public void actionPerformed(ActionEvent e){
-        String targetCommand = e.getActionCommand();
-        switch (targetCommand) {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String command = e.getActionCommand();
+
+        switch (command) {
             case "Exit":
                 System.exit(0);
                 break;
+
             case "About":
-                JDialog aboutApp = new JDialog(new JFrame(), "About");
-                    JLabel labelA = new JLabel((String) this.appName);
-                    // labelA.setFont(defaultFont);
-                    String text = "<html>";
-                    text += "Version: 1.0<br/>";
-                    text += "Date Started: 2023-10-23<br/>";
-                    text += "Author: Dureen DPDevProject<br/>";
-                    text += "Github: <a href='https://github.com/dureen' target='_blank'>https://github.com/dureen</a><br/>";
-                    text += "</html>";
-                    JLabel labelB = new JLabel();
-                    labelB.setText(text);
-                    labelB.setFont(defaultFont);
-                    aboutApp.getContentPane().add(BorderLayout.NORTH,labelA);
-                    aboutApp.getContentPane().add(BorderLayout.CENTER,labelB);
-                    aboutApp.setSize(300,300);
-                    aboutApp.setLocationRelativeTo(null);
-                    aboutApp.setModal(true);
-                    aboutApp.setAlwaysOnTop(true);
-                    aboutApp.setVisible(true);
+                JDialog about = new JDialog((JFrame) null, "About", true);
+
+                String html = "<html>"
+                        + "Version: 1.0<br/>"
+                        + "Date Started: 2023-10-23<br/>"
+                        + "Author: Dureen<br/>"
+                        + "GitHub: https://github.com/dureen"
+                        + "</html>";
+
+                JLabel title = new JLabel(APP_NAME);
+                JLabel info = new JLabel(html);
+                info.setFont(DEFAULT_FONT);
+
+                about.getContentPane().add(BorderLayout.NORTH, title);
+                about.getContentPane().add(BorderLayout.CENTER, info);
+                about.setSize(320, 200);
+                about.setLocationRelativeTo(null);
+                about.setVisible(true);
                 break;
         }
     }
